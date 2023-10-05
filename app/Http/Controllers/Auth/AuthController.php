@@ -1,66 +1,30 @@
 <?php
 
-
 namespace App\Http\Controllers\Auth;
 
-
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Validator;
-
 use Session;
-
 use App\Models\User;
-
 use Hash;
 
 
 class AuthController extends Controller
-
 {
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-
     public function index()
-
     {
-
         return view('auth.login');
-
     }
-
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
 
     public function registration()
-
     {
-
         return view('auth.register');
-
     }
 
 
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-
     public function postLogin(Request $request)
-
     {
 
 

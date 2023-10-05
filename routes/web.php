@@ -14,13 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 Route::controller(AuthController::class)->group(function () {
-    Route::get('login', 'index')->name('login');
+    Route::get('/', 'index')->name('login');
     Route::post('post-login', 'postLogin')->name('login.post');
     Route::get('registration', 'registration')->name('register');
     Route::post('post-registration', 'postRegistration')->name('register.post');
