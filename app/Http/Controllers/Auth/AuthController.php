@@ -1,9 +1,7 @@
 <?php
 
 
-
 namespace App\Http\Controllers\Auth;
-
 
 
 use App\Http\Controllers\Controller;
@@ -21,19 +19,14 @@ use App\Models\User;
 use Hash;
 
 
-
 class AuthController extends Controller
 
 {
 
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function index()
@@ -45,15 +38,10 @@ class AuthController extends Controller
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function registration()
@@ -65,15 +53,10 @@ class AuthController extends Controller
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function postLogin(Request $request)
@@ -81,36 +64,28 @@ class AuthController extends Controller
     {
 
 
-
         $validator = Validator::make($request->all(), [
 
             'email' => 'required|email',
 
-            'password' => 'required'
+            'password' => 'required',
 
         ]);
 
 
-
-        if ($validator->fails()){
+        if ($validator->fails()) {
 
             return response()->json([
-
-                "status" => false,
-
-                "errors" => $validator->errors()
-
-            ]);
+                "status" => false, "errors" => $validator->errors(),]);
 
         } else {
 
             if (Auth::attempt($request->only(["email", "password"]))) {
 
                 return response()->json([
-
                     "status" => true,
 
-                    "redirect" => url("dashboard")
+                    "redirect" => url("dashboard"),
 
                 ]);
 
@@ -120,7 +95,7 @@ class AuthController extends Controller
 
                     "status" => false,
 
-                    "errors" => ["Invalid credentials"]
+                    "errors" => ["Invalid credentials"],
 
                 ]);
 
@@ -131,15 +106,10 @@ class AuthController extends Controller
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function postRegistration(Request $request)
@@ -159,19 +129,17 @@ class AuthController extends Controller
         ]);
 
 
-
-        if ($validator->fails()){
+        if ($validator->fails()) {
 
             return response()->json([
 
                 "status" => false,
 
-                "errors" => $validator->errors()
+                "errors" => $validator->errors(),
 
             ]);
 
         }
-
 
 
         $data = $request->all();
@@ -179,45 +147,36 @@ class AuthController extends Controller
         $user = $this->create($data);
 
 
-
         Auth::login($user);
-
 
 
         return response()->json([
 
             "status" => true,
 
-            "redirect" => url("dashboard")
+            "redirect" => url("dashboard"),
 
         ]);
-
 
 
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function dashboard()
 
     {
 
-        if(Auth::check()){
+        if (Auth::check()) {
 
             return view('dashboard');
 
         }
-
 
 
         return redirect("login")->withSuccess('Opps! You do not have access');
@@ -225,15 +184,10 @@ class AuthController extends Controller
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
     public function create(array $data)
@@ -246,30 +200,25 @@ class AuthController extends Controller
 
             'email' => $data['email'],
 
-            'password' => Hash::make($data['password'])
+            'password' => Hash::make($data['password']),
 
         ]);
 
     }
 
 
-
     /**
-
      * Write code on Method
-
      *
-
      * @return response()
-
      */
 
-    public function logout() {
+    public function logout()
+    {
 
         Session::flush();
 
         Auth::logout();
-
 
 
         return Redirect('login');
