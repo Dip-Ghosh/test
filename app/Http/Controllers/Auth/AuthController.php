@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginValidation;
 use App\Http\Requests\RegistrationValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,24 +26,8 @@ class AuthController extends Controller
     }
 
 
-    public function postLogin(Request $request)
+    public function postLogin(LoginValidation $request)
     {
-
-
-        $validator = Validator::make($request->all(), [
-
-
-
-        ]);
-
-
-        if ($validator->fails()) {
-
-            return response()->json([
-                "status" => false, "errors" => $validator->errors(),]);
-
-        } else {
-
             if (Auth::attempt($request->only(["email", "password"]))) {
 
                 return response()->json([
@@ -52,19 +37,20 @@ class AuthController extends Controller
 
                 ]);
 
-            } else {
-
-                return response()->json([
-
-                    "status" => false,
-
-                    "errors" => ["Invalid credentials"],
-
-                ]);
-
             }
+//            else {
+//
+//                return response()->json([
+//
+//                    "status" => false,
+//
+//                    "errors" => ["Invalid credentials"],
+//
+//                ]);
+//
+//            }
 
-        }
+//        }
 
     }
 
