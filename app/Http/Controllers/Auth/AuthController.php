@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegistrationValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -30,9 +31,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
 
-            'email' => 'required|email',
 
-            'password' => 'required',
 
         ]);
 
@@ -76,19 +75,13 @@ class AuthController extends Controller
      * @return response()
      */
 
-    public function postRegistration(Request $request)
+    public function postRegistration(RegistrationValidation $request)
 
     {
 
         $validator = Validator::make($request->all(), [
 
-            'name' => 'required',
 
-            'email' => 'required|email|unique:users',
-
-            'password' => 'required|min:6',
-
-            'confirm_password' => 'required|min:6|same:password',
 
         ]);
 
