@@ -67,6 +67,9 @@
                     </li>
                 @else
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                     </li>
                 @endguest
@@ -76,5 +79,7 @@
 </nav>
 
 @yield('content')
+
+@include('scripts.authentication-script')
 </body>
 </html>

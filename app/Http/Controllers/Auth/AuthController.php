@@ -37,33 +37,26 @@ class AuthController extends Controller
 
     public function login(LoginValidation $request): \Illuminate\Http\JsonResponse
     {
-        $authenticate = $this->loginRegistration->checkAuthentication($request->only(['email', 'password']));
+        $authenticate = $this->loginRegistration->checkAuthentication($request->validated());
 
         return response()->json([
-            'status'  => $authenticate ? true : false,
+            'status' => $authenticate ? true : false,
             'message' => $authenticate ? 'Successfully Login' : 'Invalid Credentials',
-            'data'    => $authenticate ? route('admin.home') : false
+            'redirect' => $authenticate ? route('admin.home') : false
         ]);
     }
 
     public function register(RegistrationValidation $request): \Illuminate\Http\JsonResponse
     {
-        dd($request->all());
-        Auth::login($this->loginRegistration->saveUser($request->only(['name', 'email', 'password'])));
+        Auth::login($this->loginRegistration->saveUser($request->validated()));
 
         return response()->json([
-            'status'   => true,
-            'redirect' => url("dashboard")
+            'status' => true,
+            'message' => 'Successfully Registered.',
+            'redirect' => route('admin.home')
         ]);
-
     }
 
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
 
     public function dashboard()
 
@@ -77,29 +70,6 @@ class AuthController extends Controller
 
 
         return redirect("login")->withSuccess('Opps! You do not have access');
-
-    }
-
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-
-    public function create(array $data)
-
-    {
-
-        return User::create([
-
-            'name' => $data['name'],
-
-            'email' => $data['email'],
-
-            'password' => Hash::make($data['password']),
-
-        ]);
 
     }
 

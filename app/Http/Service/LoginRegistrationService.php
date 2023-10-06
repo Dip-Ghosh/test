@@ -22,10 +22,6 @@ class LoginRegistrationService
 
     public function saveUser(array $params)
     {
-       return $this->userRepository->save([
-            'name'     => $params['name'],
-            'email'    => $params['email'],
-            'password' => Hash::make($params['password'])
-        ]);
+        return $this->userRepository->save($params);
     }
 }
