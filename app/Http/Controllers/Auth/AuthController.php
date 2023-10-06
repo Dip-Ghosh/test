@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enum\ResponseCodeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginValidation;
 use App\Http\Requests\RegistrationValidation;
-use Illuminate\Http\Request;
+use App\Http\Service\LoginRegistrationService;
+use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\UnauthorizedException;
 use Session;
 use App\Models\User;
 use Hash;
@@ -15,6 +17,13 @@ use Hash;
 
 class AuthController extends Controller
 {
+    private $loginRegistration;
+
+    public function __construct(LoginRegistrationService $loginRegistration)
+    {
+        $this->loginRegistration = $loginRegistration;
+    }
+
     public function index()
     {
         return view('auth.login');
@@ -26,81 +35,26 @@ class AuthController extends Controller
     }
 
 
-    public function postLogin(LoginValidation $request)
+    public function login(LoginValidation $request)
     {
-            if (Auth::attempt($request->only(["email", "password"]))) {
+        $authCheck = $this->loginRegistration->checkAuthentication($request->only(['email', 'password']));
 
-                return response()->json([
-                    "status" => true,
+        if (!$authCheck) return $this->responseError(null, 'Invalid Credentials', ResponseCodeEnum::UNAUTHORIZED->value);
 
-                    "redirect" => url("dashboard"),
-
-                ]);
-
-            }
-//            else {
-//
-//                return response()->json([
-//
-//                    "status" => false,
-//
-//                    "errors" => ["Invalid credentials"],
-//
-//                ]);
-//
-//            }
-
-//        }
+        return redirect()->route('admin.home');
 
     }
 
 
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-
-    public function postRegistration(RegistrationValidation $request)
-
+    public function register(RegistrationValidation $request)
     {
-
-        $validator = Validator::make($request->all(), [
-
-
-
-        ]);
-
-
-        if ($validator->fails()) {
-
-            return response()->json([
-
-                "status" => false,
-
-                "errors" => $validator->errors(),
-
-            ]);
-
-        }
-
-
-        $data = $request->all();
-
-        $user = $this->create($data);
-
-
-        Auth::login($user);
-
+        dd($request->all());
+        Auth::login($this->loginRegistration->saveUser($request->only(['name', 'email', 'password'])));
 
         return response()->json([
-
-            "status" => true,
-
-            "redirect" => url("dashboard"),
-
+            "status"   => true,
+            "redirect" => url("dashboard")
         ]);
-
 
     }
 
@@ -149,23 +103,10 @@ class AuthController extends Controller
 
     }
 
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-
     public function logout()
     {
-
         Session::flush();
-
         Auth::logout();
-
-
-        return Redirect('login');
-
+        return redirect()->route('login');
     }
-
 }

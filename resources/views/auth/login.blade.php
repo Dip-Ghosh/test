@@ -66,26 +66,6 @@
 
                                 </div>
 
-
-                                <div class="form-group row">
-
-                                    <div class="col-md-6 offset-md-4">
-
-                                        <div class="checkbox">
-
-                                            <label>
-
-                                                <input type="checkbox" name="remember"> Remember Me
-
-                                            </label>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
                                 <div class="col-md-6 offset-md-4">
 
                                     <button type="submit" class="btn btn-primary">
@@ -114,75 +94,46 @@
 
 
     <script type="text/javascript">
+        $(document).on("submit", "#handleAjax", function () {
+            var e = this;
+            $(this).find("[type='submit']").html("Login...");
+            $.ajax({
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+
+                    console.log(data);
+                    $(e).find("[type='submit']").html("Login");
+                    if (data.status) {
+                        window.location = data.redirect;
+
+                    } else {
 
 
-        $(function () {
+                        $(".alert").remove();
 
+                        $.each(data.errors, function (key, val) {
 
-            /*------------------------------------------
+                            $("#errors-list").append("<div class='alert alert-danger'>" + val + "</div>");
 
-            --------------------------------------------
-
-            Submit Event
-
-            --------------------------------------------
-
-            --------------------------------------------*/
-
-            $(document).on("submit", "#handleAjax", function () {
-
-                var e = this;
-
-
-                $(this).find("[type='submit']").html("Login...");
-
-
-                $.ajax({
-
-                    url: $(this).attr('action'),
-
-                    data: $(this).serialize(),
-
-                    type: "POST",
-
-                    dataType: 'json',
-
-                    success: function (data) {
-
-
-                        $(e).find("[type='submit']").html("Login");
-
-
-                        if (data.status) {
-
-                            window.location = data.redirect;
-
-                        } else {
-
-                            $(".alert").remove();
-
-                            $.each(data.errors, function (key, val) {
-
-                                $("#errors-list").append("<div class='alert alert-danger'>" + val + "</div>");
-
-                            });
-
-                        }
-
+                        });
 
                     }
 
-                });
 
-
-                return false;
+                }
+                error: function (data) {
+                    console.log(data);
+                }
 
             });
 
 
+            return false;
+
         });
-
-
     </script>
 
 @endsection
