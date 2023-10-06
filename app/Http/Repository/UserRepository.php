@@ -10,4 +10,9 @@ class UserRepository
     {
        return User::create($params);
     }
+
+    public function saveImage($params)
+    {
+
+    }
 }

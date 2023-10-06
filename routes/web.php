@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,5 +15,9 @@ Route::controller(AuthController::class)->group(function () {
 });
 Route::controller(UserController::class)->group(function () {
     Route::get('/', 'index')->name('users.index');
+});
+Route::controller(ImageController::class)->group(function () {
+    Route::get('/upload', 'show')->name('images.show');
+    Route::post('/upload', 'store')->name('images.store');
 });
 
