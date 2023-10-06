@@ -1,14 +1,17 @@
 @extends('layout')
 @section('content')
+
+
     <main class="login-form">
         <div class="cotainer">
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Login</div>
+                        <div class="row  alert alert-danger" role="alert" id="error-message" style="display: none">
+                            <span class="text-danger-error justify-content-center"></span>
+                        </div>
                         <div class="card-body">
-                            <form action="{{ route('login.post') }}" method="POST" id="handleAjax">
-                                @csrf
+                            <form id="login-form">
                                 <div id="errors-list"></div>
                                 <div class="form-group row">
                                     <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
@@ -42,31 +45,32 @@
         </div>
     </main>
 
-    <script type="text/javascript">
-        $(document).on("submit", "#handleAjax", function () {
-            var e = this;
-            $(this).find("[type='submit']").html("Login...");
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script>
+
+        $(document).on("submit", "#login-form", function (event) {
+            event.preventDefault();
+
+            let url      = "{{ route('login.perform') }}";
+            let email    = $("#email_address").val();
+            let password = $("#password").val();
+            let token    = "{{ csrf_token() }}";
+
             $.ajax({
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
+                url: url,
+                data: {
+                  email: email,
+                  password:password,
+                  "_token" : token
+                },
                 type: "POST",
                 dataType: 'json',
-                success: function (data) {
-
-                    console.log(data);
-                    $(e).find("[type='submit']").html("Login");
-                    if (data.status) {
-                        window.location = data.redirect;
-
-                    } else {
-                        $(".alert").remove();
-                        $.each(data.errors, function (key, val) {
-                            $("#errors-list").append("<div class='alert alert-danger'>" + val + "</div>");
-                        });
+                success: function (response) {
+                    if (response.status) window.location = response.data;
+                    else {
+                        $('.text-danger-error').text(response.message);
+                        $('#error-message').css('display', 'block')
                     }
-                },
-                error: function (data) {
-                    console.log(data);
                 }
             });
 

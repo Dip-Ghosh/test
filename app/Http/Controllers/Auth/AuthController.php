@@ -8,6 +8,7 @@ use App\Http\Requests\LoginValidation;
 use App\Http\Requests\RegistrationValidation;
 use App\Http\Service\LoginRegistrationService;
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
 use Session;
@@ -24,36 +25,35 @@ class AuthController extends Controller
         $this->loginRegistration = $loginRegistration;
     }
 
-    public function index()
+    public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    public function registration()
+    public function showRegistrationForm()
     {
         return view('auth.register');
     }
 
-
-    public function login(LoginValidation $request)
+    public function login(LoginValidation $request): \Illuminate\Http\JsonResponse
     {
-        $authCheck = $this->loginRegistration->checkAuthentication($request->only(['email', 'password']));
+        $authenticate = $this->loginRegistration->checkAuthentication($request->only(['email', 'password']));
 
-        if (!$authCheck) return $this->responseError(null, 'Invalid Credentials', ResponseCodeEnum::UNAUTHORIZED->value);
-
-        return redirect()->route('admin.home');
-
+        return response()->json([
+            'status'  => $authenticate ? true : false,
+            'message' => $authenticate ? 'Successfully Login' : 'Invalid Credentials',
+            'data'    => $authenticate ? route('admin.home') : false
+        ]);
     }
 
-
-    public function register(RegistrationValidation $request)
+    public function register(RegistrationValidation $request): \Illuminate\Http\JsonResponse
     {
         dd($request->all());
         Auth::login($this->loginRegistration->saveUser($request->only(['name', 'email', 'password'])));
 
         return response()->json([
-            "status"   => true,
-            "redirect" => url("dashboard")
+            'status'   => true,
+            'redirect' => url("dashboard")
         ]);
 
     }
@@ -107,6 +107,6 @@ class AuthController extends Controller
     {
         Session::flush();
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('login.show');
     }
 }

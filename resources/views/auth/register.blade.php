@@ -3,11 +3,10 @@
     <main class="login-form">
         <div class="cotainer">
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Register</div>
                         <div class="card-body">
-                            <form action="{{ route('register.post') }}" method="POST" id="handleAjax">
+                            <form action="{{ route('register.perform') }}" method="POST" id="handleAjax">
                                 @csrf
                                 <div id="errors-list"></div>
                                 <div class="form-group row">
