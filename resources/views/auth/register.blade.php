@@ -6,7 +6,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('register.perform') }}" method="POST" id="handleAjax">
+                            <form id="registration-form">
                                 @csrf
                                 <div id="errors-list"></div>
                                 <div class="form-group row">
